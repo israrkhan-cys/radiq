@@ -1,0 +1,4 @@
+radialctl_autogen/timestamp: \
+	/home/PaininAss/Desktop/radial/tools/radialctl/CMakeLists.txt \
+	/home/PaininAss/Desktop/radial/tools/radialctl/main.cpp \
+	/usr/sbin/cmake

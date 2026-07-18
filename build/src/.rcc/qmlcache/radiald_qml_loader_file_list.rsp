@@ -1,0 +1,7 @@
+--resource
+/home/PaininAss/Desktop/radial/build/src/.qt/rcc/qmake_Radial.qrc
+--resource
+/home/PaininAss/Desktop/radial/build/src/.qt/rcc/radiald_raw_qml_0.qrc
+--resource
+/home/PaininAss/Desktop/radial/build/src/.qt/rcc/radiald_raw_qml_0_extra_qmldirs.qrc
+/qt/qml/Radial/ui/qml/Main.qml

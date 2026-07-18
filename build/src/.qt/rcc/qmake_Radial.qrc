@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/Radial">
+    <file alias="qmldir">/home/PaininAss/Desktop/radial/build/src/Radial/qmldir</file>
+  </qresource>
+</RCC>
+

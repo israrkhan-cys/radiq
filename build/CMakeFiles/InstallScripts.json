@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/PaininAss/Desktop/radial/build/cmake_install.cmake",
+		"/home/PaininAss/Desktop/radial/build/src/cmake_install.cmake",
+		"/home/PaininAss/Desktop/radial/build/tools/radialctl/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
