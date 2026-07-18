@@ -10,115 +10,115 @@
                             "column": 12,
                             "durationMicroseconds": 0,
                             "functionName": "flags",
-                            "line": 28,
+                            "line": 11,
                             "message": ""
                         },
                         {
                             "codegenResult": 2,
-                            "column": 5,
+                            "column": 41,
                             "durationMicroseconds": 0,
-                            "functionName": "itemCount",
-                            "line": 35,
-                            "message": "Cannot access value for name appCatalogModel"
+                            "functionName": "isSearching",
+                            "line": 15,
+                            "message": "Cannot access value for name appCatalog"
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 5,
+                            "codegenResult": 0,
+                            "column": 31,
                             "durationMicroseconds": 0,
-                            "functionName": "angleForIndex",
-                            "line": 39,
-                            "message": "Functions without type annotations won't be compiled"
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 5,
-                            "durationMicroseconds": 0,
-                            "functionName": "moveHighlight",
-                            "line": 45,
-                            "message": "Functions without type annotations won't be compiled"
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 5,
-                            "durationMicroseconds": 0,
-                            "functionName": "launchCurrent",
-                            "line": 52,
-                            "message": "Cannot access value for name appCatalogModel"
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 5,
-                            "durationMicroseconds": 0,
-                            "functionName": "hideOverlay",
-                            "line": 57,
-                            "message": "Cannot access value for name overlayController"
+                            "functionName": "onSearchListIndexChanged",
+                            "line": 17,
+                            "message": ""
                         },
                         {
                             "codegenResult": 2,
                             "column": 23,
                             "durationMicroseconds": 0,
                             "functionName": "onVisibleChanged",
-                            "line": 254,
+                            "line": 23,
                             "message": "Cannot retrieve a non-object type by ID: searchField"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 17,
+                            "durationMicroseconds": 0,
+                            "functionName": "target",
+                            "line": 35,
+                            "message": "Cannot access value for name overlayController"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 9,
+                            "durationMicroseconds": 0,
+                            "functionName": "onCloseRequested",
+                            "line": 36,
+                            "message": ""
                         },
                         {
                             "codegenResult": 0,
                             "column": 23,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 64,
+                            "line": 43,
                             "message": ""
                         },
                         {
                             "codegenResult": 0,
-                            "column": 24,
+                            "column": 23,
                             "durationMicroseconds": 0,
-                            "functionName": "onClicked",
-                            "line": 68,
+                            "functionName": "when",
+                            "line": 57,
                             "message": ""
                         },
                         {
                             "codegenResult": 0,
-                            "column": 27,
+                            "column": 43,
                             "durationMicroseconds": 0,
-                            "functionName": "fill",
-                            "line": 67,
+                            "functionName": "target",
+                            "line": 58,
                             "message": ""
                         },
                         {
                             "codegenResult": 0,
-                            "column": 16,
+                            "column": 23,
                             "durationMicroseconds": 0,
-                            "functionName": "width",
-                            "line": 75,
+                            "functionName": "when",
+                            "line": 52,
                             "message": ""
                         },
                         {
                             "codegenResult": 0,
-                            "column": 17,
+                            "column": 43,
                             "durationMicroseconds": 0,
-                            "functionName": "height",
-                            "line": 76,
+                            "functionName": "target",
+                            "line": 53,
                             "message": ""
                         },
                         {
                             "codegenResult": 0,
-                            "column": 27,
+                            "column": 96,
                             "durationMicroseconds": 0,
-                            "functionName": "centerIn",
-                            "line": 74,
+                            "functionName": "type",
+                            "line": 72,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 24,
+                            "codegenResult": 1,
+                            "column": 44,
                             "durationMicroseconds": 0,
-                            "functionName": "onClicked",
-                            "line": 81,
+                            "functionName": "script",
+                            "line": 73,
+                            "message": "Skipped code generation for binding for property of type QQmlScriptString; nothing to do."
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 92,
+                            "durationMicroseconds": 0,
+                            "functionName": "type",
+                            "line": 66,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
+                            "codegenResult": 1,
                             "column": 27,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
@@ -126,347 +126,731 @@
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 29,
+                            "codegenResult": 1,
+                            "column": 28,
                             "durationMicroseconds": 0,
-                            "functionName": "renderStrategy",
-                            "line": 87,
+                            "functionName": "onClicked",
+                            "line": 85,
                             "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 22,
-                            "durationMicroseconds": 4000,
-                            "functionName": "onPaint",
-                            "line": 89,
-                            "message": "Cannot generate efficient code for call to untyped JavaScript function"
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 27,
+                            "codegenResult": 1,
+                            "column": 31,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 86,
+                            "line": 84,
                             "message": ""
                         },
                         {
-                            "codegenResult": 2,
+                            "codegenResult": 1,
+                            "column": 22,
+                            "durationMicroseconds": 0,
+                            "functionName": "opacity",
+                            "line": 97,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 20,
+                            "durationMicroseconds": 0,
+                            "functionName": "scale",
+                            "line": 98,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 22,
+                            "durationMicroseconds": 0,
+                            "functionName": "visible",
+                            "line": 99,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 31,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 94,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 81,
+                            "durationMicroseconds": 0,
+                            "functionName": "type",
+                            "line": 101,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 79,
+                            "durationMicroseconds": 0,
+                            "functionName": "type",
+                            "line": 102,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
                             "column": 25,
                             "durationMicroseconds": 0,
-                            "functionName": "target",
-                            "line": 123,
-                            "message": "Cannot access value for name appCatalogModel"
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 17,
-                            "durationMicroseconds": 0,
-                            "functionName": "onModelReset",
-                            "line": 124,
+                            "functionName": "radius",
+                            "line": 109,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 17,
+                            "codegenResult": 1,
+                            "column": 35,
                             "durationMicroseconds": 0,
-                            "functionName": "onRowsInserted",
-                            "line": 125,
+                            "functionName": "centerIn",
+                            "line": 106,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 17,
+                            "codegenResult": 1,
+                            "column": 39,
                             "durationMicroseconds": 0,
-                            "functionName": "onRowsRemoved",
+                            "functionName": "centerIn",
+                            "line": 115,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 31,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 121,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 46,
+                            "durationMicroseconds": 0,
+                            "functionName": "horizontalAlignment",
                             "line": 126,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 17,
+                            "codegenResult": 1,
+                            "column": 32,
                             "durationMicroseconds": 0,
-                            "functionName": "onDataChanged",
+                            "functionName": "elide",
                             "line": 127,
                             "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 20,
+                            "codegenResult": 1,
+                            "column": 32,
                             "durationMicroseconds": 0,
-                            "functionName": "model",
-                            "line": 133,
-                            "message": "Cannot access value for name appCatalogModel"
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 42,
-                            "durationMicroseconds": 0,
-                            "functionName": "midRadius",
-                            "line": 136,
-                            "message": "Cannot access value for name root"
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 44,
-                            "durationMicroseconds": 0,
-                            "functionName": "midAngleDeg",
-                            "line": 137,
-                            "message": "Cannot access value for name root"
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 44,
-                            "durationMicroseconds": 0,
-                            "functionName": "midAngleRad",
-                            "line": 138,
+                            "functionName": "width",
+                            "line": 128,
                             "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 43,
+                            "codegenResult": 1,
+                            "column": 51,
                             "durationMicroseconds": 0,
-                            "functionName": "isSelected",
-                            "line": 139,
-                            "message": "Cannot access value for name index"
+                            "functionName": "horizontalCenter",
+                            "line": 120,
+                            "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 20,
-                            "durationMicroseconds": 0,
-                            "functionName": "x",
-                            "line": 141,
-                            "message": "Cannot access value for name wheelRoot"
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 20,
-                            "durationMicroseconds": 0,
-                            "functionName": "y",
-                            "line": 142,
-                            "message": "Cannot access value for name wheelRoot"
-                        },
-                        {
-                            "codegenResult": 0,
+                            "codegenResult": 1,
                             "column": 24,
                             "durationMicroseconds": 0,
-                            "functionName": "scale",
-                            "line": 146,
+                            "functionName": "model",
+                            "line": 135,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 26,
+                            "codegenResult": 1,
+                            "column": 51,
                             "durationMicroseconds": 0,
-                            "functionName": "opacity",
-                            "line": 147,
+                            "functionName": "angle",
+                            "line": 139,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 83,
+                            "codegenResult": 1,
+                            "column": 24,
                             "durationMicroseconds": 0,
-                            "functionName": "type",
+                            "functionName": "x",
+                            "line": 142,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 24,
+                            "durationMicroseconds": 0,
+                            "functionName": "y",
+                            "line": 143,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 54,
+                            "durationMicroseconds": 0,
+                            "functionName": "isActive",
                             "line": 148,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 85,
+                            "codegenResult": 1,
+                            "column": 28,
                             "durationMicroseconds": 0,
-                            "functionName": "type",
-                            "line": 149,
+                            "functionName": "scale",
+                            "line": 150,
                             "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 29,
-                            "durationMicroseconds": 0,
-                            "functionName": "source",
-                            "line": 154,
-                            "message": "Cannot access value for name model"
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 31,
-                            "durationMicroseconds": 0,
-                            "functionName": "fillMode",
-                            "line": 155,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 0,
+                            "codegenResult": 1,
                             "column": 30,
                             "durationMicroseconds": 0,
-                            "functionName": "visible",
-                            "line": 156,
+                            "functionName": "opacity",
+                            "line": 151,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 35,
+                            "codegenResult": 1,
+                            "column": 87,
                             "durationMicroseconds": 0,
-                            "functionName": "fill",
+                            "functionName": "type",
                             "line": 153,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 29,
+                            "codegenResult": 1,
+                            "column": 89,
                             "durationMicroseconds": 0,
-                            "functionName": "radius",
-                            "line": 165,
+                            "functionName": "type",
+                            "line": 154,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 30,
+                            "codegenResult": 1,
+                            "column": 33,
                             "durationMicroseconds": 0,
-                            "functionName": "visible",
+                            "functionName": "radius",
+                            "line": 158,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 159,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 157,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 160,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 161,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
                             "line": 167,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 35,
+                            "codegenResult": 1,
+                            "column": 41,
                             "durationMicroseconds": 0,
-                            "functionName": "fill",
-                            "line": 164,
+                            "functionName": "source",
+                            "line": 172,
                             "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 31,
+                            "codegenResult": 1,
+                            "column": 42,
                             "durationMicroseconds": 0,
-                            "functionName": "text",
-                            "line": 170,
-                            "message": "Cannot access value for name model"
+                            "functionName": "visible",
+                            "line": 173,
+                            "message": ""
                         },
                         {
-                            "codegenResult": 0,
+                            "codegenResult": 1,
                             "column": 43,
                             "durationMicroseconds": 0,
-                            "functionName": "centerIn",
-                            "line": 169,
+                            "functionName": "fillMode",
+                            "line": 174,
                             "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 32,
+                            "codegenResult": 1,
+                            "column": 47,
                             "durationMicroseconds": 0,
-                            "functionName": "onEntered",
-                            "line": 180,
-                            "message": "Cannot access value for name root"
+                            "functionName": "fill",
+                            "line": 171,
+                            "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 32,
+                            "codegenResult": 1,
+                            "column": 42,
                             "durationMicroseconds": 0,
-                            "functionName": "onClicked",
-                            "line": 181,
-                            "message": "Cannot access value for name root"
+                            "functionName": "visible",
+                            "line": 179,
+                            "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 35,
+                            "codegenResult": 1,
+                            "column": 47,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
                             "line": 178,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 20,
+                            "codegenResult": 1,
+                            "column": 43,
                             "durationMicroseconds": 0,
-                            "functionName": "width",
-                            "line": 190,
+                            "functionName": "text",
+                            "line": 184,
                             "message": ""
                         },
                         {
-                            "codegenResult": 0,
+                            "codegenResult": 1,
+                            "column": 44,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 185,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 55,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 183,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 40,
+                            "durationMicroseconds": 0,
+                            "functionName": "onEntered",
+                            "line": 196,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 40,
+                            "durationMicroseconds": 0,
+                            "functionName": "onClicked",
+                            "line": 197,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 194,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 22,
+                            "durationMicroseconds": 0,
+                            "functionName": "opacity",
+                            "line": 214,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 20,
+                            "durationMicroseconds": 0,
+                            "functionName": "scale",
+                            "line": 215,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 22,
+                            "durationMicroseconds": 0,
+                            "functionName": "visible",
+                            "line": 216,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
                             "column": 31,
                             "durationMicroseconds": 0,
                             "functionName": "centerIn",
-                            "line": 188,
+                            "line": 210,
                             "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 24,
+                            "codegenResult": 1,
+                            "column": 81,
                             "durationMicroseconds": 0,
-                            "functionName": "width",
-                            "line": 193,
-                            "message": "Could not find property \"width\"."
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 38,
-                            "durationMicroseconds": 0,
-                            "functionName": "horizontalAlignment",
-                            "line": 194,
-                            "message": "Could not find property \"horizontalAlignment\"."
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 23,
-                            "durationMicroseconds": 0,
-                            "functionName": "text",
-                            "line": 195,
-                            "message": "Could not find property \"text\"."
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 24,
-                            "durationMicroseconds": 0,
-                            "functionName": "elide",
-                            "line": 202,
-                            "message": "Could not find property \"elide\"."
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 24,
-                            "durationMicroseconds": 0,
-                            "functionName": "width",
-                            "line": 206,
+                            "functionName": "type",
+                            "line": 218,
                             "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 42,
+                            "codegenResult": 1,
+                            "column": 79,
                             "durationMicroseconds": 0,
-                            "functionName": "horizontalAlignment",
-                            "line": 221,
-                            "message": "Could not find property \"horizontalAlignment\"."
+                            "functionName": "type",
+                            "line": 219,
+                            "message": ""
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 36,
+                            "codegenResult": 1,
+                            "column": 31,
                             "durationMicroseconds": 0,
-                            "functionName": "onTextChanged",
-                            "line": 224,
-                            "message": "Could not find signal \"textChanged\"."
+                            "functionName": "fill",
+                            "line": 222,
+                            "message": ""
                         },
                         {
-                            "codegenResult": 2,
+                            "codegenResult": 1,
+                            "column": 28,
+                            "durationMicroseconds": 0,
+                            "functionName": "model",
+                            "line": 233,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 35,
+                            "durationMicroseconds": 0,
+                            "functionName": "currentIndex",
+                            "line": 235,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 37,
+                            "durationMicroseconds": 0,
+                            "functionName": "onCountChanged",
+                            "line": 237,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
                             "column": 35,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 215,
-                            "message": "Could not find property \"fill\"."
+                            "line": 231,
+                            "message": ""
                         },
                         {
-                            "codegenResult": 2,
+                            "codegenResult": 1,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 244,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 59,
+                            "durationMicroseconds": 0,
+                            "functionName": "isCurrent",
+                            "line": 248,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 250,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 251,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 255,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 57,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 262,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 45,
+                            "durationMicroseconds": 0,
+                            "functionName": "source",
+                            "line": 266,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 46,
+                            "durationMicroseconds": 0,
+                            "functionName": "visible",
+                            "line": 267,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 47,
+                            "durationMicroseconds": 0,
+                            "functionName": "fillMode",
+                            "line": 268,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 51,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 265,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 46,
+                            "durationMicroseconds": 0,
+                            "functionName": "visible",
+                            "line": 273,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 45,
+                            "durationMicroseconds": 0,
+                            "functionName": "radius",
+                            "line": 275,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 51,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 272,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 47,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 279,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 59,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 278,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 57,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 289,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 293,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 301,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 44,
+                            "durationMicroseconds": 0,
+                            "functionName": "elide",
+                            "line": 305,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 40,
+                            "durationMicroseconds": 0,
+                            "functionName": "onEntered",
+                            "line": 314,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 40,
+                            "durationMicroseconds": 0,
+                            "functionName": "onClicked",
+                            "line": 315,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 312,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 30,
+                            "durationMicroseconds": 0,
+                            "functionName": "visible",
+                            "line": 329,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 324,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "horizontalCenter",
+                            "line": 337,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 29,
+                            "durationMicroseconds": 0,
+                            "functionName": "bottom",
+                            "line": 338,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 27,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 344,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 31,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 350,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 45,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 357,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 363,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 360,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 28,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 369,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 29,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 370,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 40,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalAlignment",
+                            "line": 371,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
+                            "column": 36,
+                            "durationMicroseconds": 0,
+                            "functionName": "onTextChanged",
+                            "line": 430,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 1,
                             "column": 37,
                             "durationMicroseconds": 0,
                             "functionName": "onPressed",
-                            "line": 230,
-                            "message": "Cannot retrieve a non-object type by ID: searchField"
+                            "line": 384,
+                            "message": ""
                         },
                         {
-                            "codegenResult": 0,
+                            "codegenResult": 1,
                             "column": 37,
                             "durationMicroseconds": 0,
                             "functionName": "onPressed",
-                            "line": 230,
+                            "line": 384,
                             "message": ""
                         }
                     ],

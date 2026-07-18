@@ -136,7 +136,7 @@ Window {
 
                 delegate: Item {
                     id: slot
-                    readonly property real angle: -Math.PI / 2 + index * (2 * Math.PI / 8)
+                    readonly property real angle: -Math.PI / 2 + index * (2 * Math.PI / appCatalog.wheelApps.length)
                     readonly property real radius: 180
 
                     x: wheelContainer.width / 2 + radius * Math.cos(angle) - width / 2
@@ -395,7 +395,7 @@ Window {
                                     searchListIndex = (searchListIndex + 1) % searchListView.count;
                                 }
                             } else {
-                                activeIndex = (activeIndex + 1) % 8;
+                                activeIndex = (activeIndex + 1) % appCatalog.wheelApps.length;
                             }
                             event.accepted = true;
                         } else if (event.key === Qt.Key_Up || event.key === Qt.Key_Left) {
@@ -404,7 +404,7 @@ Window {
                                     searchListIndex = (searchListIndex - 1 + searchListView.count) % searchListView.count;
                                 }
                             } else {
-                                activeIndex = (activeIndex - 1 + 8) % 8;
+                                activeIndex = (activeIndex - 1 + appCatalog.wheelApps.length) % appCatalog.wheelApps.length;
                             }
                             event.accepted = true;
                         } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {

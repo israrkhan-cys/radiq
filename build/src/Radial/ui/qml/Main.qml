@@ -1,23 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 
-// =====================================================================
-// ASSUMPTIONS — verify these against your actual backend, adjust if named
-// differently. Everything else in this file doesn't depend on these names.
-//
-//   1. Context property exposing the app catalog is called `appCatalogModel`
-//      - exposes a list-model interface with roles: `name` (string) and
-//        `iconSource` (url string, e.g. "image://appicon/<id>")
-//      - has Q_INVOKABLE launch(int index)
-//      - has a writable property `filterText` (string) that, when set,
-//        re-populates the model's rows with fuzzy-filtered results
-//        (clearing it / setting "" restores the default hardcoded set)
-//   2. Context property `overlayController` has Q_INVOKABLE hide()
-//      already wired to the fade+scale-out transition
-// If any of these don't match your real names, just search/replace them
-// below — nothing else needs to change.
-// =====================================================================
-
 Window {
     id: root
     width: 1280
@@ -27,236 +10,429 @@ Window {
     title: "Radial Launcher Overlay"
     flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
 
-    property int currentIndex: 0
-    property real ringOuterRadius: 260
-    property real ringInnerRadius: 130
-    property real gapDegrees: 3
+    property int activeIndex: 0
+    property int searchListIndex: 0
+    readonly property bool isSearching: appCatalog.searchQuery.length > 0
 
-    function itemCount() {
-        return appCatalogModel ? appCatalogModel.rowCount() : 0
-    }
-
-    function angleForIndex(i, count) {
-        // 0 index sits at the top (-90deg), evenly spaced clockwise
-        var slice = 360 / Math.max(count, 1)
-        return (i * slice) - 90
-    }
-
-    function moveHighlight(delta) {
-        var count = itemCount()
-        if (count === 0) return
-        currentIndex = (currentIndex + delta + count) % count
-        wheelCanvas.requestPaint()
-    }
-
-    function launchCurrent() {
-        if (itemCount() === 0) return
-        appCatalogModel.launch(currentIndex)
-    }
-
-    function hideOverlay() {
-        overlayController.hide()
-    }
-
-    // dark scrim background, click to dismiss
-    Rectangle {
-        id: scrim
-        anchors.fill: parent
-        color: "#80000000"
-        MouseArea {
-            anchors.fill: parent
-            onClicked: root.hideOverlay()
-        }
-    }
-
-    Item {
-        id: wheelRoot
-        anchors.centerIn: parent
-        width: root.ringOuterRadius * 2
-        height: root.ringOuterRadius * 2
-
-        // stop scrim's click-to-dismiss from firing when clicking inside the ring
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {} // absorb, does nothing
-        }
-
-        Canvas {
-            id: wheelCanvas
-            anchors.fill: parent
-            renderStrategy: Canvas.Cooperative
-
-            onPaint: {
-                var ctx = getContext("2d")
-                ctx.reset()
-                var count = root.itemCount()
-                if (count === 0) return
-
-                var cx = width / 2
-                var cy = height / 2
-                var outerR = root.ringOuterRadius
-                var innerR = root.ringInnerRadius
-                var sliceDeg = 360 / count
-                var gap = root.gapDegrees * Math.PI / 180
-
-                for (var i = 0; i < count; i++) {
-                    var startDeg = root.angleForIndex(i, count)
-                    var startRad = startDeg * Math.PI / 180 + gap / 2
-                    var endRad = (startDeg + sliceDeg) * Math.PI / 180 - gap / 2
-
-                    ctx.beginPath()
-                    ctx.arc(cx, cy, outerR, startRad, endRad, false)
-                    ctx.arc(cx, cy, innerR, endRad, startRad, true)
-                    ctx.closePath()
-
-                    var isSelected = (i === root.currentIndex)
-                    ctx.fillStyle = isSelected ? "rgba(90,140,255,0.55)" : "rgba(20,20,20,0.55)"
-                    ctx.fill()
-
-                    ctx.lineWidth = isSelected ? 2 : 1
-                    ctx.strokeStyle = isSelected ? "rgba(140,180,255,0.9)" : "rgba(255,255,255,0.15)"
-                    ctx.stroke()
-                }
-            }
-
-            Connections {
-                target: appCatalogModel
-                function onModelReset() { wheelCanvas.requestPaint() }
-                function onRowsInserted() { wheelCanvas.requestPaint() }
-                function onRowsRemoved() { wheelCanvas.requestPaint() }
-                function onDataChanged() { wheelCanvas.requestPaint() }
-            }
-        }
-
-        // Icons + labels placed at each wedge's mid-angle, mid-radius
-        Repeater {
-            model: appCatalogModel
-            delegate: Item {
-                id: slotItem
-                property real midRadius: (root.ringOuterRadius + root.ringInnerRadius) / 2
-                property real midAngleDeg: root.angleForIndex(index, root.itemCount()) + (360 / Math.max(root.itemCount(), 1)) / 2
-                property real midAngleRad: midAngleDeg * Math.PI / 180
-                property bool isSelected: index === root.currentIndex
-
-                x: wheelRoot.width / 2 + midRadius * Math.cos(midAngleRad) - width / 2
-                y: wheelRoot.height / 2 + midRadius * Math.sin(midAngleRad) - height / 2
-                width: 64
-                height: 64
-
-                scale: isSelected ? 1.3 : 1.0
-                opacity: isSelected ? 1.0 : 0.7
-                Behavior on scale { NumberAnimation { duration: 130; easing.type: Easing.OutCubic } }
-                Behavior on opacity { NumberAnimation { duration: 130; easing.type: Easing.OutCubic } }
-
-                Image {
-                    id: iconImg
-                    anchors.fill: parent
-                    source: model.iconSource
-                    fillMode: Image.PreserveAspectFit
-                    visible: status === Image.Ready
-                    asynchronous: true
-                }
-
-                // Fallback if the icon genuinely fails to load at the QML level
-                // (covers image provider crashes, not just "no icon found" —
-                // the C++ side already handles the latter with its own fallback)
-                Rectangle {
-                    anchors.fill: parent
-                    radius: width / 2
-                    color: "#444"
-                    visible: iconImg.status === Image.Error || iconImg.status === Image.Null
-                    Text {
-                        anchors.centerIn: parent
-                        text: model.name ? model.name.charAt(0).toUpperCase() : "?"
-                        color: "white"
-                        font.pixelSize: 24
-                        font.bold: true
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onEntered: { root.currentIndex = index; wheelCanvas.requestPaint() }
-                    onClicked: root.launchCurrent()
-                }
-            }
-        }
-
-        // Center content: search field (primary) + current-selection name (secondary)
-        Column {
-            anchors.centerIn: parent
-            spacing: 8
-            width: root.ringInnerRadius * 1.6
-
-            Label {
-                width: parent.width
-                horizontalAlignment: Text.AlignHCenter
-                text: {
-                    var count = root.itemCount()
-                    if (count === 0) return ""
-                    return appCatalogModel.data(appCatalogModel.index(root.currentIndex, 0), 0) // fallback if `name` role lookup differs
-                }
-                color: "#CCFFFFFF"
-                font.pixelSize: 14
-                elide: Text.ElideRight
-            }
-
-            Rectangle {
-                width: parent.width
-                height: 40
-                radius: 10
-                color: "#331A1A1A"
-                border.color: "#55FFFFFF"
-                border.width: 1
-
-                TextField {
-                    id: searchField
-                    anchors.fill: parent
-                    anchors.margins: 4
-                    placeholderText: "Search apps..."
-                    color: "white"
-                    background: Item {}
-                    font.pixelSize: 16
-                    horizontalAlignment: Text.AlignHCenter
-                    focus: true
-
-                    onTextChanged: {
-                        appCatalogModel.filterText = text
-                        root.currentIndex = 0
-                        wheelCanvas.requestPaint()
-                    }
-
-                    Keys.onPressed: (event) => {
-                        if (event.key === Qt.Key_Left || event.key === Qt.Key_Up) {
-                            root.moveHighlight(-1)
-                            event.accepted = true
-                        } else if (event.key === Qt.Key_Right || event.key === Qt.Key_Down) {
-                            root.moveHighlight(1)
-                            event.accepted = true
-                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                            root.launchCurrent()
-                            event.accepted = true
-                        } else if (event.key === Qt.Key_Escape) {
-                            if (searchField.text.length > 0) {
-                                searchField.text = ""
-                            } else {
-                                root.hideOverlay()
-                            }
-                            event.accepted = true
-                        }
-                    }
-                }
-            }
+    onSearchListIndexChanged: {
+        if (isSearching) {
+            searchListView.positionViewAtIndex(searchListIndex, ListView.Contain)
         }
     }
 
     onVisibleChanged: {
         if (visible) {
-            searchField.text = ""
-            currentIndex = 0
-            searchField.forceActiveFocus()
-            wheelCanvas.requestPaint()
+            searchField.text = "";
+            appCatalog.searchQuery = "";
+            activeIndex = 0;
+            searchListIndex = 0;
+            mainWrapper.active = true;
+            searchField.forceActiveFocus();
+        }
+    }
+
+    Connections {
+        target: overlayController
+        function onCloseRequested() {
+            mainWrapper.active = false;
+        }
+    }
+
+    Item {
+        id: mainWrapper
+        anchors.fill: parent
+        opacity: 0
+        scale: 0.95
+
+        property bool active: false
+
+        states: [
+            State {
+                name: "visible"
+                when: root.visible && mainWrapper.active
+                PropertyChanges { target: mainWrapper; opacity: 1; scale: 1.0 }
+            },
+            State {
+                name: "hidden"
+                when: !root.visible || !mainWrapper.active
+                PropertyChanges { target: mainWrapper; opacity: 0; scale: 0.95 }
+            }
+        ]
+
+        transitions: [
+            Transition {
+                from: "hidden"
+                to: "visible"
+                NumberAnimation { properties: "opacity,scale"; duration: 150; easing.type: Easing.OutQuad }
+            },
+            Transition {
+                from: "visible"
+                to: "hidden"
+                SequentialAnimation {
+                    NumberAnimation { properties: "opacity,scale"; duration: 120; easing.type: Easing.InQuad }
+                    ScriptAction { script: { overlayController.finishHide(); } }
+                }
+            }
+        ]
+
+        // Background Scrim (clicking here closes launcher)
+        Rectangle {
+            anchors.fill: parent
+            color: "#CC0F0F15" // Semi-transparent premium dark scrim
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    mainWrapper.active = false;
+                }
+            }
+        }
+
+        // Radial Wheel Container
+        Item {
+            id: wheelContainer
+            anchors.centerIn: parent
+            width: 600
+            height: 600
+            opacity: isSearching ? 0 : 1
+            scale: isSearching ? 0.8 : 1
+            visible: opacity > 0
+
+            Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+
+            // Inner Center Circle
+            Rectangle {
+                anchors.centerIn: parent
+                width: 160
+                height: 160
+                radius: width / 2
+                color: "#1A1B26"
+                border.color: "#2C2E3E"
+                border.width: 2
+
+                Column {
+                    anchors.centerIn: parent
+                    width: 140
+                    spacing: 4
+
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: activeIndex >= 0 && activeIndex < appCatalog.wheelApps.length ? appCatalog.wheelApps[activeIndex].name : ""
+                        color: "white"
+                        font.family: "Inter, Roboto, sans-serif"
+                        font.pixelSize: 18
+                        font.bold: true
+                        horizontalAlignment: Text.AlignHCenter
+                        elide: Text.ElideRight
+                        width: parent.width
+                    }
+                }
+            }
+
+            // Wheel slots
+            Repeater {
+                model: appCatalog.wheelApps
+
+                delegate: Item {
+                    id: slot
+                    readonly property real angle: -Math.PI / 2 + index * (2 * Math.PI / appCatalog.wheelApps.length)
+                    readonly property real radius: 180
+
+                    x: wheelContainer.width / 2 + radius * Math.cos(angle) - width / 2
+                    y: wheelContainer.height / 2 + radius * Math.sin(angle) - height / 2
+
+                    width: 100
+                    height: 100
+
+                    readonly property bool isActive: index === activeIndex
+
+                    scale: isActive ? 1.3 : 1.0
+                    opacity: isActive ? 1.0 : (activeIndex === -1 ? 1.0 : 0.6)
+
+                    Behavior on scale { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
+                    Behavior on opacity { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: width / 2
+                        color: isActive ? "#2D3F76" : "#1F2335"
+                        border.color: isActive ? "#7AA2F7" : "#414868"
+                        border.width: isActive ? 2 : 1
+
+                        Behavior on color { ColorAnimation { duration: 100 } }
+                        Behavior on border.color { ColorAnimation { duration: 100 } }
+
+                        Item {
+                            anchors.fill: parent
+                            anchors.margins: 22
+
+                            Image {
+                                anchors.fill: parent
+                                source: modelData.hasIcon ? "image://appicon/" + modelData.iconName : ""
+                                visible: modelData.hasIcon
+                                fillMode: Image.PreserveAspectFit
+                            }
+
+                            Rectangle {
+                                anchors.fill: parent
+                                visible: !modelData.hasIcon
+                                color: "transparent"
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: modelData.firstLetter
+                                    color: isActive ? "#7AA2F7" : "white"
+                                    font.family: "Inter, Roboto, sans-serif"
+                                    font.bold: true
+                                    font.pixelSize: 28
+                                }
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onEntered: activeIndex = index
+                            onClicked: {
+                                appCatalog.launch(modelData.desktopId);
+                                mainWrapper.active = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Fuzzy Search Results Panel (Fades in over/instead of the wheel)
+        Item {
+            id: searchResultsContainer
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -40
+            width: 550
+            height: 380
+            opacity: isSearching ? 1 : 0
+            scale: isSearching ? 1 : 0.8
+            visible: opacity > 0
+
+            Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+
+            Rectangle {
+                anchors.fill: parent
+                color: "#1A1B26"
+                radius: 16
+                border.color: "#2C2E3E"
+                border.width: 1
+                clip: true
+
+                ListView {
+                    id: searchListView
+                    anchors.fill: parent
+                    anchors.margins: 12
+                    model: appCatalog
+                    spacing: 6
+                    currentIndex: searchListIndex
+
+                    onCountChanged: {
+                        if (searchListIndex >= count) {
+                            searchListIndex = Math.max(0, count - 1);
+                        }
+                    }
+
+                    delegate: Rectangle {
+                        width: ListView.view.width
+                        height: 58
+                        radius: 8
+
+                        readonly property bool isCurrent: index === searchListIndex
+
+                        color: isCurrent ? "#24283B" : "transparent"
+                        border.color: isCurrent ? "#7AA2F7" : "transparent"
+                        border.width: 1
+
+                        Row {
+                            anchors.fill: parent
+                            anchors.margins: 8
+                            spacing: 14
+
+                            Item {
+                                width: 42
+                                height: 42
+                                anchors.verticalCenter: parent.verticalCenter
+
+                                Image {
+                                    anchors.fill: parent
+                                    source: model.hasIcon ? "image://appicon/" + model.iconName : ""
+                                    visible: model.hasIcon
+                                    fillMode: Image.PreserveAspectFit
+                                }
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    visible: !model.hasIcon
+                                    color: "#1F2335"
+                                    radius: width / 2
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: model.firstLetter
+                                        color: "white"
+                                        font.family: "Inter, Roboto, sans-serif"
+                                        font.bold: true
+                                        font.pixelSize: 18
+                                    }
+                                }
+                            }
+
+                            Column {
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 2
+
+                                Text {
+                                    text: model.name
+                                    color: "white"
+                                    font.family: "Inter, Roboto, sans-serif"
+                                    font.bold: true
+                                    font.pixelSize: 15
+                                }
+
+                                Text {
+                                    text: model.exec
+                                    color: "#787C99"
+                                    font.family: "Inter, Roboto, sans-serif"
+                                    font.pixelSize: 11
+                                    elide: Text.ElideRight
+                                    width: 440
+                                }
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onEntered: searchListIndex = index
+                            onClicked: {
+                                appCatalog.launch(model.desktopId);
+                                mainWrapper.active = false;
+                            }
+                        }
+                    }
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "No applications found"
+                    color: "#565F89"
+                    font.family: "Inter, Roboto, sans-serif"
+                    font.pixelSize: 16
+                    visible: searchListView.count === 0
+                }
+            }
+        }
+
+        // Docked Search Bar
+        Rectangle {
+            id: searchBarContainer
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 80
+            width: 450
+            height: 52
+            color: "#1A1B26"
+            radius: 26
+            border.color: searchField.activeFocus ? "#7AA2F7" : "#2C2E3E"
+            border.width: 1
+
+            Behavior on border.color { ColorAnimation { duration: 150 } }
+
+            Row {
+                anchors.fill: parent
+                anchors.margins: 6
+                spacing: 10
+
+                Item {
+                    width: 40
+                    height: 40
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: "🔍"
+                        font.pixelSize: 18
+                        color: searchField.activeFocus ? "#7AA2F7" : "#565F89"
+                    }
+                }
+
+                TextField {
+                    id: searchField
+                    width: parent.width - 60
+                    height: parent.height
+                    verticalAlignment: TextInput.AlignVCenter
+                    font.family: "Inter, Roboto, sans-serif"
+                    font.pixelSize: 16
+                    color: "white"
+                    placeholderText: "Type to search..."
+                    placeholderTextColor: "#565F89"
+
+                    background: Rectangle {
+                        color: "transparent"
+                    }
+
+                    selectByMouse: true
+
+                    Keys.onPressed: function(event) {
+                        if (event.key === Qt.Key_Escape) {
+                            if (text.length > 0) {
+                                text = "";
+                            } else {
+                                mainWrapper.active = false;
+                            }
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Down || event.key === Qt.Key_Right) {
+                            if (isSearching) {
+                                if (searchListView.count > 0) {
+                                    searchListIndex = (searchListIndex + 1) % searchListView.count;
+                                }
+                            } else {
+                                activeIndex = (activeIndex + 1) % appCatalog.wheelApps.length;
+                            }
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Up || event.key === Qt.Key_Left) {
+                            if (isSearching) {
+                                if (searchListView.count > 0) {
+                                    searchListIndex = (searchListIndex - 1 + searchListView.count) % searchListView.count;
+                                }
+                            } else {
+                                activeIndex = (activeIndex - 1 + appCatalog.wheelApps.length) % appCatalog.wheelApps.length;
+                            }
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                            if (isSearching) {
+                                if (searchListView.count > 0 && searchListIndex >= 0 && searchListIndex < searchListView.count) {
+                                    var desktopId = appCatalog.desktopIdAt(searchListIndex);
+                                    if (desktopId) {
+                                        appCatalog.launch(desktopId);
+                                        mainWrapper.active = false;
+                                    }
+                                }
+                            } else {
+                                if (activeIndex >= 0 && activeIndex < appCatalog.wheelApps.length) {
+                                    var app = appCatalog.wheelApps[activeIndex];
+                                    appCatalog.launch(app.desktopId);
+                                    mainWrapper.active = false;
+                                }
+                            }
+                            event.accepted = true;
+                        }
+                    }
+
+                    onTextChanged: {
+                        appCatalog.searchQuery = text;
+                        searchListIndex = 0;
+                    }
+                }
+            }
         }
     }
 }
