@@ -15,7 +15,7 @@ Window {
     readonly property bool isSearching: appCatalog.searchQuery.length > 0
 
     onSearchListIndexChanged: {
-        if (isSearching) {
+        if (isSearching && searchListView) {
             searchListView.positionViewAtIndex(searchListIndex, ListView.Contain)
         }
     }
@@ -101,102 +101,152 @@ Window {
             Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
             Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
 
-            // Inner Center Circle
-            Rectangle {
-                anchors.centerIn: parent
-                width: 160
-                height: 160
-                radius: width / 2
-                color: "#1A1B26"
-                border.color: "#2C2E3E"
-                border.width: 2
+            // Math helper for mapping mouse coordinate to wedge index
+            function getSlotIndex(mx, my) {
+                var dx = mx - wheelContainer.width / 2;
+                var dy = my - wheelContainer.height / 2;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 100 || dist > 230) {
+                    return -1; // outside the ring
+                }
+                
+                var angle = Math.atan2(dy, dx);
+                var step = 2 * Math.PI / appCatalog.wheelApps.length;
+                var normalizedAngle = angle + Math.PI / 2 + (step / 2);
+                if (normalizedAngle < 0) {
+                    normalizedAngle += 2 * Math.PI;
+                }
+                
+                var idx = Math.floor(normalizedAngle / step) % appCatalog.wheelApps.length;
+                return idx;
+            }
 
-                Column {
-                    anchors.centerIn: parent
-                    width: 140
-                    spacing: 4
-
-                    Text {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        text: activeIndex >= 0 && activeIndex < appCatalog.wheelApps.length ? appCatalog.wheelApps[activeIndex].name : ""
-                        color: "white"
-                        font.family: "Inter, Roboto, sans-serif"
-                        font.pixelSize: 18
-                        font.bold: true
-                        horizontalAlignment: Text.AlignHCenter
-                        elide: Text.ElideRight
-                        width: parent.width
+            // Mouse interaction area for the wedges
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                
+                onPositionChanged: function(mouse) {
+                    var idx = wheelContainer.getSlotIndex(mouse.x, mouse.y);
+                    if (idx !== -1) {
+                        activeIndex = idx;
+                    }
+                }
+                
+                onClicked: function(mouse) {
+                    var idx = wheelContainer.getSlotIndex(mouse.x, mouse.y);
+                    if (idx !== -1) {
+                        var app = appCatalog.wheelApps[idx];
+                        appCatalog.launch(app.desktopId);
+                        mainWrapper.active = false;
                     }
                 }
             }
 
-            // Wheel slots
+            // Wheel slots (Wedges and Icons)
             Repeater {
                 model: appCatalog.wheelApps
 
                 delegate: Item {
                     id: slot
-                    readonly property real angle: -Math.PI / 2 + index * (2 * Math.PI / appCatalog.wheelApps.length)
-                    readonly property real radius: 180
-
-                    x: wheelContainer.width / 2 + radius * Math.cos(angle) - width / 2
-                    y: wheelContainer.height / 2 + radius * Math.sin(angle) - height / 2
-
-                    width: 100
-                    height: 100
+                    anchors.fill: parent
 
                     readonly property bool isActive: index === activeIndex
+                    readonly property real angleStep: 2 * Math.PI / appCatalog.wheelApps.length
+                    readonly property real midAngle: -Math.PI / 2 + index * angleStep
+                    
+                    // Angles for Canvas (with a small gap)
+                    readonly property real gapAngle: 0.03
+                    readonly property real canvasStartAngle: midAngle - angleStep / 2 + gapAngle
+                    readonly property real canvasEndAngle: midAngle + angleStep / 2 - gapAngle
 
-                    scale: isActive ? 1.3 : 1.0
-                    opacity: isActive ? 1.0 : (activeIndex === -1 ? 1.0 : 0.6)
-
-                    Behavior on scale { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
-                    Behavior on opacity { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
-
-                    Rectangle {
+                    // Canvas to draw the wedge segment
+                    Canvas {
+                        id: wedgeCanvas
                         anchors.fill: parent
-                        radius: width / 2
-                        color: isActive ? "#2D3F76" : "#1F2335"
-                        border.color: isActive ? "#7AA2F7" : "#414868"
-                        border.width: isActive ? 2 : 1
+                        
+                        property color fillColor: isActive ? "#2D3F76" : "#CC1F2335"
+                        property color strokeColor: isActive ? "#7AA2F7" : "#414868"
+                        property real scaleFactor: isActive ? 1.04 : 1.0
+                        
+                        Behavior on fillColor { ColorAnimation { duration: 130 } }
+                        Behavior on strokeColor { ColorAnimation { duration: 130 } }
+                        Behavior on scaleFactor { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
+                        
+                        onFillColorChanged: requestPaint()
+                        onStrokeColorChanged: requestPaint()
+                        onScaleFactorChanged: requestPaint()
 
-                        Behavior on color { ColorAnimation { duration: 100 } }
-                        Behavior on border.color { ColorAnimation { duration: 100 } }
+                        onPaint: {
+                            var ctx = getContext("2d");
+                            ctx.reset();
+                            ctx.clearRect(0, 0, width, height);
+                            
+                            var centerX = width / 2;
+                            var centerY = height / 2;
+                            
+                            ctx.save();
+                            if (scaleFactor !== 1.0) {
+                                ctx.translate(centerX, centerY);
+                                ctx.scale(scaleFactor, scaleFactor);
+                                ctx.translate(-centerX, -centerY);
+                            }
+                            
+                            var rInner = 100;
+                            var rOuter = 230;
+                            
+                            ctx.beginPath();
+                            ctx.arc(centerX, centerY, rOuter, canvasStartAngle, canvasEndAngle, false);
+                            ctx.lineTo(centerX + rInner * Math.cos(canvasEndAngle), centerY + rInner * Math.sin(canvasEndAngle));
+                            ctx.arc(centerX, centerY, rInner, canvasEndAngle, canvasStartAngle, true);
+                            ctx.closePath();
+                            
+                            ctx.fillStyle = fillColor;
+                            ctx.fill();
+                            
+                            ctx.lineWidth = isActive ? 2.5 : 1.5;
+                            ctx.strokeStyle = strokeColor;
+                            ctx.stroke();
+                            
+                            ctx.restore();
+                        }
+                    }
 
-                        Item {
+                    // Icon / Text Fallback positioned at wedge midpoint radius
+                    Item {
+                        id: iconContainer
+                        width: 56
+                        height: 56
+                        
+                        readonly property real radius: 165
+                        scale: isActive ? 1.25 : 1.0
+                        opacity: isActive ? 1.0 : (activeIndex === -1 ? 1.0 : 0.6)
+                        
+                        x: wheelContainer.width / 2 + radius * Math.cos(midAngle) - width / 2
+                        y: wheelContainer.height / 2 + radius * Math.sin(midAngle) - height / 2
+                        
+                        Behavior on scale { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
+                        Behavior on opacity { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
+
+                        Image {
                             anchors.fill: parent
-                            anchors.margins: 22
-
-                            Image {
-                                anchors.fill: parent
-                                source: modelData.hasIcon ? "image://appicon/" + modelData.iconName : ""
-                                visible: modelData.hasIcon
-                                fillMode: Image.PreserveAspectFit
-                            }
-
-                            Rectangle {
-                                anchors.fill: parent
-                                visible: !modelData.hasIcon
-                                color: "transparent"
-
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: modelData.firstLetter
-                                    color: isActive ? "#7AA2F7" : "white"
-                                    font.family: "Inter, Roboto, sans-serif"
-                                    font.bold: true
-                                    font.pixelSize: 28
-                                }
-                            }
+                            source: modelData.hasIcon ? "image://appicon/" + modelData.iconName : ""
+                            visible: modelData.hasIcon
+                            fillMode: Image.PreserveAspectFit
                         }
 
-                        MouseArea {
+                        Rectangle {
                             anchors.fill: parent
-                            hoverEnabled: true
-                            onEntered: activeIndex = index
-                            onClicked: {
-                                appCatalog.launch(modelData.desktopId);
-                                mainWrapper.active = false;
+                            visible: !modelData.hasIcon
+                            color: "transparent"
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: modelData.firstLetter
+                                color: isActive ? "#7AA2F7" : "white"
+                                font.family: "Inter, Roboto, sans-serif"
+                                font.bold: true
+                                font.pixelSize: 26
                             }
                         }
                     }
@@ -204,13 +254,134 @@ Window {
             }
         }
 
-        // Fuzzy Search Results Panel (Fades in over/instead of the wheel)
+        // Inner Center Circle & Search Input (Stays in center)
+        Rectangle {
+            id: centerCircle
+            anchors.centerIn: parent
+            width: 180
+            height: 180
+            radius: width / 2
+            color: "#1A1B26"
+            border.color: searchField.activeFocus ? "#7AA2F7" : "#2C2E3E"
+            border.width: 2
+            
+            Behavior on border.color { ColorAnimation { duration: 150 } }
+
+            Column {
+                anchors.centerIn: parent
+                width: 150
+                spacing: 8
+
+                // Highlighted App Name
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: activeIndex >= 0 && activeIndex < appCatalog.wheelApps.length ? appCatalog.wheelApps[activeIndex].name : ""
+                    color: "white"
+                    font.family: "Inter, Roboto, sans-serif"
+                    font.pixelSize: 14
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    elide: Text.ElideRight
+                    width: parent.width
+                    opacity: isSearching ? 0.3 : 1.0
+                    Behavior on opacity { NumberAnimation { duration: 100 } }
+                }
+
+                // Search Input Field
+                TextField {
+                    id: searchField
+                    width: parent.width
+                    height: 36
+                    horizontalAlignment: TextInput.AlignHCenter
+                    verticalAlignment: TextInput.AlignVCenter
+                    font.family: "Inter, Roboto, sans-serif"
+                    font.pixelSize: 14
+                    color: "white"
+                    placeholderText: "Search..."
+                    placeholderTextColor: "#565F89"
+
+                    background: Rectangle {
+                        color: "#24283B"
+                        radius: 18
+                        border.color: searchField.activeFocus ? "#7AA2F7" : "#414868"
+                        border.width: 1
+                    }
+
+                    selectByMouse: true
+
+                    Keys.onPressed: function(event) {
+                        if (event.key === Qt.Key_Escape) {
+                            if (text.length > 0) {
+                                text = "";
+                            } else {
+                                mainWrapper.active = false;
+                            }
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Down || event.key === Qt.Key_Right) {
+                            if (isSearching) {
+                                if (searchListView.count > 0) {
+                                    searchListIndex = (searchListIndex + 1) % searchListView.count;
+                                }
+                            } else {
+                                activeIndex = (activeIndex + 1) % appCatalog.wheelApps.length;
+                            }
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Up || event.key === Qt.Key_Left) {
+                            if (isSearching) {
+                                if (searchListView.count > 0) {
+                                    searchListIndex = (searchListIndex - 1 + searchListView.count) % searchListView.count;
+                                }
+                            } else {
+                                activeIndex = (activeIndex - 1 + appCatalog.wheelApps.length) % appCatalog.wheelApps.length;
+                            }
+                            event.accepted = true;
+                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                            if (isSearching) {
+                                if (searchListView.count > 0 && searchListIndex >= 0 && searchListIndex < searchListView.count) {
+                                    var desktopId = appCatalog.desktopIdAt(searchListIndex);
+                                    if (desktopId) {
+                                        appCatalog.launch(desktopId);
+                                        mainWrapper.active = false;
+                                    }
+                                }
+                            } else {
+                                if (activeIndex >= 0 && activeIndex < appCatalog.wheelApps.length) {
+                                    var app = appCatalog.wheelApps[activeIndex];
+                                    appCatalog.launch(app.desktopId);
+                                    mainWrapper.active = false;
+                                }
+                            }
+                            event.accepted = true;
+                        }
+                    }
+
+                    onTextChanged: {
+                        appCatalog.searchQuery = text;
+                        searchListIndex = 0;
+                    }
+                }
+
+                // Search Status / Count Hint
+                Text {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: isSearching ? (searchListView.count + " matches") : "Active slot"
+                    color: "#565F89"
+                    font.family: "Inter, Roboto, sans-serif"
+                    font.pixelSize: 11
+                    horizontalAlignment: Text.AlignHCenter
+                }
+            }
+        }
+
+        // Fuzzy Search Results Panel (Fades in below/around the center circle)
         Item {
             id: searchResultsContainer
-            anchors.centerIn: parent
-            anchors.verticalCenterOffset: -40
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: parent.height / 2 + 105
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 40
             width: 550
-            height: 380
             opacity: isSearching ? 1 : 0
             scale: isSearching ? 1 : 0.8
             visible: opacity > 0
@@ -327,110 +498,6 @@ Window {
                     font.family: "Inter, Roboto, sans-serif"
                     font.pixelSize: 16
                     visible: searchListView.count === 0
-                }
-            }
-        }
-
-        // Docked Search Bar
-        Rectangle {
-            id: searchBarContainer
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 80
-            width: 450
-            height: 52
-            color: "#1A1B26"
-            radius: 26
-            border.color: searchField.activeFocus ? "#7AA2F7" : "#2C2E3E"
-            border.width: 1
-
-            Behavior on border.color { ColorAnimation { duration: 150 } }
-
-            Row {
-                anchors.fill: parent
-                anchors.margins: 6
-                spacing: 10
-
-                Item {
-                    width: 40
-                    height: 40
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "🔍"
-                        font.pixelSize: 18
-                        color: searchField.activeFocus ? "#7AA2F7" : "#565F89"
-                    }
-                }
-
-                TextField {
-                    id: searchField
-                    width: parent.width - 60
-                    height: parent.height
-                    verticalAlignment: TextInput.AlignVCenter
-                    font.family: "Inter, Roboto, sans-serif"
-                    font.pixelSize: 16
-                    color: "white"
-                    placeholderText: "Type to search..."
-                    placeholderTextColor: "#565F89"
-
-                    background: Rectangle {
-                        color: "transparent"
-                    }
-
-                    selectByMouse: true
-
-                    Keys.onPressed: function(event) {
-                        if (event.key === Qt.Key_Escape) {
-                            if (text.length > 0) {
-                                text = "";
-                            } else {
-                                mainWrapper.active = false;
-                            }
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Down || event.key === Qt.Key_Right) {
-                            if (isSearching) {
-                                if (searchListView.count > 0) {
-                                    searchListIndex = (searchListIndex + 1) % searchListView.count;
-                                }
-                            } else {
-                                activeIndex = (activeIndex + 1) % appCatalog.wheelApps.length;
-                            }
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Up || event.key === Qt.Key_Left) {
-                            if (isSearching) {
-                                if (searchListView.count > 0) {
-                                    searchListIndex = (searchListIndex - 1 + searchListView.count) % searchListView.count;
-                                }
-                            } else {
-                                activeIndex = (activeIndex - 1 + appCatalog.wheelApps.length) % appCatalog.wheelApps.length;
-                            }
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                            if (isSearching) {
-                                if (searchListView.count > 0 && searchListIndex >= 0 && searchListIndex < searchListView.count) {
-                                    var desktopId = appCatalog.desktopIdAt(searchListIndex);
-                                    if (desktopId) {
-                                        appCatalog.launch(desktopId);
-                                        mainWrapper.active = false;
-                                    }
-                                }
-                            } else {
-                                if (activeIndex >= 0 && activeIndex < appCatalog.wheelApps.length) {
-                                    var app = appCatalog.wheelApps[activeIndex];
-                                    appCatalog.launch(app.desktopId);
-                                    mainWrapper.active = false;
-                                }
-                            }
-                            event.accepted = true;
-                        }
-                    }
-
-                    onTextChanged: {
-                        appCatalog.searchQuery = text;
-                        searchListIndex = 0;
-                    }
                 }
             }
         }
