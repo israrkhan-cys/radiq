@@ -1,3 +1,0 @@
-/home/PaininAss/Desktop/radial/build/src/radiald_autogen/include/../EG44UEYHH4/moc_AppCatalogModel.cpp.json
-/home/PaininAss/Desktop/radial/build/src/radiald_autogen/include/../EG44UEYHH4/moc_OverlayController.cpp.json
-/home/PaininAss/Desktop/radial/build/src/radiald_autogen/include/../EG44UEYHH4/moc_SocketServer.cpp.json

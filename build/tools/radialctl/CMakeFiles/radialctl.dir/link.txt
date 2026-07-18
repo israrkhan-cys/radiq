@@ -1,1 +1,0 @@
-/usr/sbin/c++ -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/radialctl.dir/link.d CMakeFiles/radialctl.dir/radialctl_autogen/mocs_compilation.cpp.o CMakeFiles/radialctl.dir/main.cpp.o -o radialctl  /usr/lib/libQt6Network.so.6.11.1 /usr/lib/libQt6Core.so.6.11.1

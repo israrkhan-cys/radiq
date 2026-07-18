@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file alias="/qt/qml/Radial">/home/PaininAss/Desktop/radial/build/src/Radial</file>
-
-  </qresource>
-</RCC>

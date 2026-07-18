@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/Radial/">
-    <file alias="ui/qml/Main.qml">/home/PaininAss/Desktop/radial/src/ui/qml/Main.qml</file>
-  </qresource>
-</RCC>
-

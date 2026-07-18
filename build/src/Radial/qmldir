@@ -1,6 +1,0 @@
-module Radial
-typeinfo radiald.qmltypes
-prefer :/qt/qml/Radial/
-Main 1.0 ui/qml/Main.qml
-depends QtQuick
-
