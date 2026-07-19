@@ -15,6 +15,8 @@ struct AppInfo {
     bool hasIcon = false;
 };
 
+class ConfigStore;
+
 class AppCatalogModel final : public QAbstractListModel {
     Q_OBJECT
     Q_PROPERTY(QString searchQuery READ searchQuery WRITE setSearchQuery NOTIFY searchQueryChanged)
@@ -30,7 +32,7 @@ public:
         HasIconRole
     };
 
-    explicit AppCatalogModel(QObject *parent = nullptr);
+    explicit AppCatalogModel(ConfigStore *configStore = nullptr, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
@@ -61,6 +63,7 @@ private:
     QVector<AppInfo> m_filteredApps;
     QVariantList m_wheelApps;
     QString m_searchQuery;
+    ConfigStore *m_configStore = nullptr;
 };
 
 class AppIconProvider final : public QQuickImageProvider {

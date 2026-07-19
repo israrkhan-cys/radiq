@@ -1,4 +1,5 @@
 #include "AppCatalogModel.hpp"
+#include "ConfigStore.hpp"
 
 #include <QDir>
 #include <QDirIterator>
@@ -45,8 +46,11 @@ int matchScore(const QString &text, const QString &query) {
 }
 } // namespace
 
-AppCatalogModel::AppCatalogModel(QObject *parent)
-    : QAbstractListModel(parent) {
+AppCatalogModel::AppCatalogModel(ConfigStore *configStore, QObject *parent)
+    : QAbstractListModel(parent), m_configStore(configStore) {
+    if (m_configStore) {
+        connect(m_configStore, &ConfigStore::pinnedAppsChanged, this, &AppCatalogModel::loadApps);
+    }
     loadApps();
 }
 
@@ -250,9 +254,13 @@ void AppCatalogModel::loadApps() {
         }
     }
 
-    // Now populate m_wheelApps with the 8 hardcoded slots.
-    // Order: browser, terminal, file manager, editor, discord, gimp, system monitor, obs
-    const QStringList targetDesktopIds = {
+    // Get target lists from ConfigStore or fallback
+    QStringList targetDesktopIds;
+    if (m_configStore) {
+        targetDesktopIds = m_configStore->pinnedApps();
+    }
+
+    const QStringList defaultDesktopIds = {
         "firefox.desktop",
         "Alacritty.desktop",
         "org.kde.dolphin.desktop",
@@ -263,7 +271,7 @@ void AppCatalogModel::loadApps() {
         "com.obsproject.Studio.desktop"
     };
 
-    const QStringList fallbackNames = {
+    const QStringList defaultNames = {
         "Firefox",
         "Alacritty",
         "Dolphin",
@@ -274,7 +282,7 @@ void AppCatalogModel::loadApps() {
         "OBS Studio"
     };
 
-    const QStringList fallbackExecs = {
+    const QStringList defaultExecs = {
         "firefox",
         "alacritty",
         "dolphin",
@@ -285,7 +293,7 @@ void AppCatalogModel::loadApps() {
         "obs"
     };
 
-    const QStringList fallbackIcons = {
+    const QStringList defaultIcons = {
         "firefox",
         "Alacritty",
         "system-file-manager",
@@ -295,6 +303,23 @@ void AppCatalogModel::loadApps() {
         "system-monitor",
         "obs"
     };
+
+    if (targetDesktopIds.isEmpty()) {
+        targetDesktopIds = defaultDesktopIds;
+    } else {
+        // Fill remaining slots up to at least 8 elements using non-duplicate default apps
+        QSet<QString> addedIds(targetDesktopIds.begin(), targetDesktopIds.end());
+        for (int i = 0; i < defaultDesktopIds.size(); ++i) {
+            QString defId = defaultDesktopIds.at(i);
+            if (!addedIds.contains(defId)) {
+                targetDesktopIds.append(defId);
+                addedIds.insert(defId);
+            }
+            if (targetDesktopIds.size() >= 8) {
+                break;
+            }
+        }
+    }
 
     m_wheelApps.clear();
     for (int i = 0; i < targetDesktopIds.size(); ++i) {
@@ -312,21 +337,46 @@ void AppCatalogModel::loadApps() {
         } else {
             // Setup fallback item
             map["desktopId"] = targetId;
-            map["name"] = fallbackNames.at(i);
-            map["exec"] = fallbackExecs.at(i);
-            map["iconName"] = fallbackIcons.at(i);
-            map["firstLetter"] = fallbackNames.at(i).left(1).toUpper();
             
-            // Check if fallback icon name exists in theme
+            // Check if it matches one of our defaults
+            int defaultIdx = defaultDesktopIds.indexOf(targetId);
+            QString fallbackName;
+            QString fallbackExec;
+            QString fallbackIcon;
+            
+            if (defaultIdx != -1) {
+                fallbackName = defaultNames.at(defaultIdx);
+                fallbackExec = defaultExecs.at(defaultIdx);
+                fallbackIcon = defaultIcons.at(defaultIdx);
+            } else {
+                // Custom app fallback guessing
+                QString base = targetId;
+                if (base.endsWith(".desktop")) {
+                    base.chop(8);
+                }
+                fallbackExec = base;
+                fallbackIcon = base;
+                
+                if (!base.isEmpty()) {
+                    fallbackName = base.at(0).toUpper() + base.mid(1);
+                } else {
+                    fallbackName = "Unknown";
+                }
+            }
+            
+            map["name"] = fallbackName;
+            map["exec"] = fallbackExec;
+            map["iconName"] = fallbackIcon;
+            map["firstLetter"] = fallbackName.isEmpty() ? "?" : fallbackName.left(1).toUpper();
+            
             bool hasIcon = false;
-            QString iconName = fallbackIcons.at(i);
-            if (QIcon::hasThemeIcon(iconName)) {
+            if (QIcon::hasThemeIcon(fallbackIcon)) {
                 hasIcon = true;
             }
             map["hasIcon"] = hasIcon;
             
             if (!hasIcon) {
-                qWarning() << "Fallback to text icon for hardcoded app:" << fallbackNames.at(i) << " (Icon entry:" << iconName << ")";
+                qWarning() << "Fallback to text icon for app:" << fallbackName << " (Icon entry:" << fallbackIcon << ")";
             }
         }
         m_wheelApps.append(map);

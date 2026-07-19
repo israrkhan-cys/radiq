@@ -63,13 +63,13 @@ Window {
             Transition {
                 from: "hidden"
                 to: "visible"
-                NumberAnimation { properties: "opacity,scale"; duration: 150; easing.type: Easing.OutQuad }
+                NumberAnimation { properties: "opacity,scale"; duration: config.animationDurationMs; easing.type: Easing.OutQuad }
             },
             Transition {
                 from: "visible"
                 to: "hidden"
                 SequentialAnimation {
-                    NumberAnimation { properties: "opacity,scale"; duration: 120; easing.type: Easing.InQuad }
+                    NumberAnimation { properties: "opacity,scale"; duration: config.animationDurationMs; easing.type: Easing.InQuad }
                     ScriptAction { script: { overlayController.finishHide(); } }
                 }
             }
@@ -98,15 +98,15 @@ Window {
             scale: isSearching ? 0.8 : 1
             visible: opacity > 0
 
-            Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
-            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+            Behavior on opacity { NumberAnimation { duration: config.animationDurationMs; easing.type: Easing.OutQuad } }
+            Behavior on scale { NumberAnimation { duration: config.animationDurationMs; easing.type: Easing.OutQuad } }
 
             // Math helper for mapping mouse coordinate to wedge index
             function getSlotIndex(mx, my) {
                 var dx = mx - wheelContainer.width / 2;
                 var dy = my - wheelContainer.height / 2;
                 var dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 100 || dist > 230) {
+                if (dist < config.ringInnerRadius || dist > config.ringOuterRadius) {
                     return -1; // outside the ring
                 }
                 
@@ -165,13 +165,13 @@ Window {
                         id: wedgeCanvas
                         anchors.fill: parent
                         
-                        property color fillColor: isActive ? "#2D3F76" : "#CC1F2335"
-                        property color strokeColor: isActive ? "#7AA2F7" : "#414868"
+                        property color fillColor: isActive ? config.wedgeHighlightColor : config.wedgeColor
+                        property color strokeColor: isActive ? config.borderHighlightColor : config.borderColor
                         property real scaleFactor: isActive ? 1.04 : 1.0
                         
-                        Behavior on fillColor { ColorAnimation { duration: 130 } }
-                        Behavior on strokeColor { ColorAnimation { duration: 130 } }
-                        Behavior on scaleFactor { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
+                        Behavior on fillColor { ColorAnimation { duration: config.animationDurationMs } }
+                        Behavior on strokeColor { ColorAnimation { duration: config.animationDurationMs } }
+                        Behavior on scaleFactor { NumberAnimation { duration: config.animationDurationMs; easing.type: Easing.OutQuad } }
                         
                         onFillColorChanged: requestPaint()
                         onStrokeColorChanged: requestPaint()
@@ -192,8 +192,8 @@ Window {
                                 ctx.translate(-centerX, -centerY);
                             }
                             
-                            var rInner = 100;
-                            var rOuter = 230;
+                            var rInner = config.ringInnerRadius;
+                            var rOuter = config.ringOuterRadius;
                             
                             ctx.beginPath();
                             ctx.arc(centerX, centerY, rOuter, canvasStartAngle, canvasEndAngle, false);
@@ -215,18 +215,18 @@ Window {
                     // Icon / Text Fallback positioned at wedge midpoint radius
                     Item {
                         id: iconContainer
-                        width: 56
-                        height: 56
+                        width: config.iconSize
+                        height: config.iconSize
                         
-                        readonly property real radius: 165
+                        readonly property real radius: (config.ringInnerRadius + config.ringOuterRadius) / 2
                         scale: isActive ? 1.25 : 1.0
                         opacity: isActive ? 1.0 : (activeIndex === -1 ? 1.0 : 0.6)
                         
                         x: wheelContainer.width / 2 + radius * Math.cos(midAngle) - width / 2
                         y: wheelContainer.height / 2 + radius * Math.sin(midAngle) - height / 2
                         
-                        Behavior on scale { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
-                        Behavior on opacity { NumberAnimation { duration: 130; easing.type: Easing.OutQuad } }
+                        Behavior on scale { NumberAnimation { duration: config.animationDurationMs; easing.type: Easing.OutQuad } }
+                        Behavior on opacity { NumberAnimation { duration: config.animationDurationMs; easing.type: Easing.OutQuad } }
 
                         Image {
                             anchors.fill: parent
@@ -243,10 +243,10 @@ Window {
                             Text {
                                 anchors.centerIn: parent
                                 text: modelData.firstLetter
-                                color: isActive ? "#7AA2F7" : "white"
-                                font.family: "Inter, Roboto, sans-serif"
+                                color: isActive ? config.borderHighlightColor : "white"
+                                font.family: config.fontFamily
                                 font.bold: true
-                                font.pixelSize: 26
+                                font.pixelSize: config.iconSize * 0.45
                             }
                         }
                     }
@@ -258,18 +258,18 @@ Window {
         Rectangle {
             id: centerCircle
             anchors.centerIn: parent
-            width: 180
-            height: 180
+            width: config.ringInnerRadius * 1.8
+            height: config.ringInnerRadius * 1.8
             radius: width / 2
             color: "#1A1B26"
-            border.color: searchField.activeFocus ? "#7AA2F7" : "#2C2E3E"
+            border.color: searchField.activeFocus ? config.borderHighlightColor : config.borderColor
             border.width: 2
             
-            Behavior on border.color { ColorAnimation { duration: 150 } }
+            Behavior on border.color { ColorAnimation { duration: config.animationDurationMs } }
 
             Column {
                 anchors.centerIn: parent
-                width: 150
+                width: parent.width * 0.85
                 spacing: 8
 
                 // Highlighted App Name
@@ -277,14 +277,14 @@ Window {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: activeIndex >= 0 && activeIndex < appCatalog.wheelApps.length ? appCatalog.wheelApps[activeIndex].name : ""
                     color: "white"
-                    font.family: "Inter, Roboto, sans-serif"
+                    font.family: config.fontFamily
                     font.pixelSize: 14
                     font.bold: true
                     horizontalAlignment: Text.AlignHCenter
                     elide: Text.ElideRight
                     width: parent.width
                     opacity: isSearching ? 0.3 : 1.0
-                    Behavior on opacity { NumberAnimation { duration: 100 } }
+                    Behavior on opacity { NumberAnimation { duration: config.animationDurationMs } }
                 }
 
                 // Search Input Field
@@ -294,7 +294,7 @@ Window {
                     height: 36
                     horizontalAlignment: TextInput.AlignHCenter
                     verticalAlignment: TextInput.AlignVCenter
-                    font.family: "Inter, Roboto, sans-serif"
+                    font.family: config.fontFamily
                     font.pixelSize: 14
                     color: "white"
                     placeholderText: "Search..."
@@ -303,7 +303,7 @@ Window {
                     background: Rectangle {
                         color: "#24283B"
                         radius: 18
-                        border.color: searchField.activeFocus ? "#7AA2F7" : "#414868"
+                        border.color: searchField.activeFocus ? config.borderHighlightColor : config.borderColor
                         border.width: 1
                     }
 
@@ -366,7 +366,7 @@ Window {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: isSearching ? (searchListView.count + " matches") : "Active slot"
                     color: "#565F89"
-                    font.family: "Inter, Roboto, sans-serif"
+                    font.family: config.fontFamily
                     font.pixelSize: 11
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -378,7 +378,7 @@ Window {
             id: searchResultsContainer
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: parent.height / 2 + 105
+            anchors.topMargin: parent.height / 2 + config.ringInnerRadius * 0.9 + 15
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 40
             width: 550
@@ -386,14 +386,14 @@ Window {
             scale: isSearching ? 1 : 0.8
             visible: opacity > 0
 
-            Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
-            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+            Behavior on opacity { NumberAnimation { duration: config.animationDurationMs; easing.type: Easing.OutQuad } }
+            Behavior on scale { NumberAnimation { duration: config.animationDurationMs; easing.type: Easing.OutQuad } }
 
             Rectangle {
                 anchors.fill: parent
                 color: "#1A1B26"
                 radius: 16
-                border.color: "#2C2E3E"
+                border.color: config.borderColor
                 border.width: 1
                 clip: true
 
@@ -419,7 +419,7 @@ Window {
                         readonly property bool isCurrent: index === searchListIndex
 
                         color: isCurrent ? "#24283B" : "transparent"
-                        border.color: isCurrent ? "#7AA2F7" : "transparent"
+                        border.color: isCurrent ? config.borderHighlightColor : "transparent"
                         border.width: 1
 
                         Row {
@@ -449,7 +449,7 @@ Window {
                                         anchors.centerIn: parent
                                         text: model.firstLetter
                                         color: "white"
-                                        font.family: "Inter, Roboto, sans-serif"
+                                        font.family: config.fontFamily
                                         font.bold: true
                                         font.pixelSize: 18
                                     }
@@ -463,7 +463,7 @@ Window {
                                 Text {
                                     text: model.name
                                     color: "white"
-                                    font.family: "Inter, Roboto, sans-serif"
+                                    font.family: config.fontFamily
                                     font.bold: true
                                     font.pixelSize: 15
                                 }
@@ -471,7 +471,7 @@ Window {
                                 Text {
                                     text: model.exec
                                     color: "#787C99"
-                                    font.family: "Inter, Roboto, sans-serif"
+                                    font.family: config.fontFamily
                                     font.pixelSize: 11
                                     elide: Text.ElideRight
                                     width: 440
@@ -495,7 +495,7 @@ Window {
                     anchors.centerIn: parent
                     text: "No applications found"
                     color: "#565F89"
-                    font.family: "Inter, Roboto, sans-serif"
+                    font.family: config.fontFamily
                     font.pixelSize: 16
                     visible: searchListView.count === 0
                 }

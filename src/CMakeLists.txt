@@ -3,6 +3,7 @@ set(RADIALD_SOURCES
     daemon/OverlayController.cpp
     daemon/SocketServer.cpp
     daemon/AppCatalogModel.cpp
+    daemon/ConfigStore.cpp
 )
 
 qt_add_executable(radiald

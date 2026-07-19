@@ -1,6 +1,7 @@
 #include "OverlayController.hpp"
 #include "SocketServer.hpp"
 #include "AppCatalogModel.hpp"
+#include "ConfigStore.hpp"
 
 #include <LayerShellQt/Window>
 
@@ -19,11 +20,13 @@ int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
     QGuiApplication::setApplicationName("radiald");
 
-    AppCatalogModel appCatalog;
+    ConfigStore configStore;
+    AppCatalogModel appCatalog(&configStore);
     OverlayController overlayController;
 
     QQmlApplicationEngine engine;
     engine.addImageProvider(QStringLiteral("appicon"), new AppIconProvider());
+    engine.rootContext()->setContextProperty(QStringLiteral("config"), &configStore);
     engine.rootContext()->setContextProperty(QStringLiteral("appCatalog"), &appCatalog);
     engine.rootContext()->setContextProperty(QStringLiteral("overlayController"), &overlayController);
 
