@@ -7,8 +7,10 @@ A Wayland-native, game-inspired radial application launcher designed for Arch Li
 ![Wayland](https://img.shields.io/badge/Wayland-LayerShell-orange.svg)
 
 ---
-
-## ✨ Features
+## Preview
+![Preview](/preview/2026-07-29-024259_hyprshot.png)
+---
+##  Features
 
 - **Pie-Slice Weapon Wheel UI:** Weapon-select wheel inspired by games like *Call of Duty* and *PUBG*. Divided into equal angular segments rendered dynamically via Canvas with smooth hover scaling and color transitions.
 - **Freedesktop Desktop Entry Discovery:** Automatically scans `$XDG_DATA_DIRS` and `~/.local/share/applications` for `.desktop` entries while filtering hidden/no-display entries and stripping desktop field codes (`%f`, `%u`, `%F`, `%U`, etc.).
@@ -20,7 +22,7 @@ A Wayland-native, game-inspired radial application launcher designed for Arch Li
 
 ---
 
-## 🛠️ Requirements & Dependencies
+##  Requirements & Dependencies
 
 Ensure the following dependencies are installed on your system (e.g., via `pacman -S` on Arch Linux):
 
@@ -32,7 +34,7 @@ Ensure the following dependencies are installed on your system (e.g., via `pacma
 
 ---
 
-## 🚀 Building from Source
+##  Building from Source
 
 ```bash
 # Clone the repository
@@ -52,7 +54,7 @@ The resulting binaries will be placed in:
 
 ---
 
-## 💻 Usage & Setup
+##  Usage & Setup
 
 ### 1. Launch the Daemon
 Start `radiqd` inside your active Wayland session:
@@ -135,15 +137,6 @@ If the file does not exist, a default starter configuration is automatically cre
 | `animationDurationMs` | Number (ms) | Duration for scale and color transitions. |
 | `fontFamily` | String | Font family stack for text labels. |
 
----
-
-## ⌨️ Controls & Shortcuts
-
-- **Mouse:** Hover over any wedge to highlight it; click to launch the application. Click outside the wheel on the background scrim to dismiss.
-- **Arrow Keys (`Up` / `Down` / `Left` / `Right`):** Move highlight sequentially around the wheel slots or search results.
-- **Typing:** Immediately filters the full application catalog using fuzzy search relevance scoring.
-- **Enter / Return:** Launch the currently selected application slot or top search result.
-- **Escape:** Clear search text if present, or hide the launcher overlay.
 
 ---
 

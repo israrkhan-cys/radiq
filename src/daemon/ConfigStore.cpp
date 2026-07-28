@@ -40,6 +40,7 @@ void ConfigStore::loadConfig() {
     m_wedgeHighlightColor = "#2D3F76";
     m_borderColor = "#414868";
     m_borderHighlightColor = "#7AA2F7";
+    m_scrimColor = "#CC0F0F15";
     m_blurAmount = 10;
     m_animationDurationMs = 130;
     m_fontFamily = "Inter, Roboto, sans-serif";
@@ -127,6 +128,12 @@ void ConfigStore::loadConfig() {
         qWarning() << "Config missing key: 'borderHighlightColor'. Using default.";
     }
 
+    if (obj.contains("scrimColor")) {
+        m_scrimColor = obj["scrimColor"].toString();
+    } else {
+        qWarning() << "Config missing key: 'scrimColor'. Using default.";
+    }
+
     if (obj.contains("blurAmount")) {
         m_blurAmount = obj["blurAmount"].toInt();
     } else {
@@ -161,6 +168,7 @@ void ConfigStore::saveDefaultConfig() {
     obj["wedgeHighlightColor"] = m_wedgeHighlightColor;
     obj["borderColor"] = m_borderColor;
     obj["borderHighlightColor"] = m_borderHighlightColor;
+    obj["scrimColor"] = m_scrimColor;
     obj["blurAmount"] = m_blurAmount;
     obj["animationDurationMs"] = m_animationDurationMs;
     obj["fontFamily"] = m_fontFamily;
@@ -223,6 +231,11 @@ void ConfigStore::setBorderHighlightColor(const QString &val) {
     if (m_borderHighlightColor == val) return;
     m_borderHighlightColor = val;
     emit borderHighlightColorChanged();
+}
+void ConfigStore::setScrimColor(const QString &val) {
+    if (m_scrimColor == val) return;
+    m_scrimColor = val;
+    emit scrimColorChanged();
 }
 void ConfigStore::setBlurAmount(int val) {
     if (m_blurAmount == val) return;

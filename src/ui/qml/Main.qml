@@ -78,7 +78,7 @@ Window {
         // Background Scrim (clicking here closes launcher)
         Rectangle {
             anchors.fill: parent
-            color: "#CC0F0F15" // Semi-transparent premium dark scrim
+            color: config.scrimColor // Semi-transparent scrim bound to config
 
             MouseArea {
                 anchors.fill: parent

@@ -15,6 +15,7 @@ class ConfigStore final : public QObject {
     Q_PROPERTY(QString wedgeHighlightColor READ wedgeHighlightColor WRITE setWedgeHighlightColor NOTIFY wedgeHighlightColorChanged)
     Q_PROPERTY(QString borderColor READ borderColor WRITE setBorderColor NOTIFY borderColorChanged)
     Q_PROPERTY(QString borderHighlightColor READ borderHighlightColor WRITE setBorderHighlightColor NOTIFY borderHighlightColorChanged)
+    Q_PROPERTY(QString scrimColor READ scrimColor WRITE setScrimColor NOTIFY scrimColorChanged)
     Q_PROPERTY(int blurAmount READ blurAmount WRITE setBlurAmount NOTIFY blurAmountChanged)
     Q_PROPERTY(int animationDurationMs READ animationDurationMs WRITE setAnimationDurationMs NOTIFY animationDurationMsChanged)
     Q_PROPERTY(QString fontFamily READ fontFamily WRITE setFontFamily NOTIFY fontFamilyChanged)
@@ -49,6 +50,9 @@ public:
     QString borderHighlightColor() const { return m_borderHighlightColor; }
     void setBorderHighlightColor(const QString &val);
 
+    QString scrimColor() const { return m_scrimColor; }
+    void setScrimColor(const QString &val);
+
     int blurAmount() const { return m_blurAmount; }
     void setBlurAmount(int val);
 
@@ -70,6 +74,7 @@ signals:
     void wedgeHighlightColorChanged();
     void borderColorChanged();
     void borderHighlightColorChanged();
+    void scrimColorChanged();
     void blurAmountChanged();
     void animationDurationMsChanged();
     void fontFamilyChanged();
@@ -87,6 +92,7 @@ private:
     QString m_wedgeHighlightColor;
     QString m_borderColor;
     QString m_borderHighlightColor;
+    QString m_scrimColor;
     int m_blurAmount = 10;
     int m_animationDurationMs = 130;
     QString m_fontFamily;
