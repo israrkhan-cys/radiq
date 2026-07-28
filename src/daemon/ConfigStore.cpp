@@ -10,7 +10,7 @@
 ConfigStore::ConfigStore(QObject *parent) : QObject(parent) {
     // Determine path
     QString configDir = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation);
-    m_configFilePath = QDir(configDir).filePath("radial-launcher/config.json");
+    m_configFilePath = QDir(configDir).filePath("radiq/config.json");
 
     // Load or create defaults
     loadConfig();

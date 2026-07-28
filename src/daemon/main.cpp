@@ -12,13 +12,13 @@
 #include <QUrl>
 
 namespace {
-constexpr auto kSocketName = "radial-launcher.sock";
-constexpr auto kLayerNamespace = "radial-launcher";
+constexpr auto kSocketName = "radiq-launcher.sock";
+constexpr auto kLayerNamespace = "radiq-launcher";
 } // namespace
 
 int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
-    QGuiApplication::setApplicationName("radiald");
+    QGuiApplication::setApplicationName("radiqd");
 
     ConfigStore configStore;
     AppCatalogModel appCatalog(&configStore);
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     engine.rootContext()->setContextProperty(QStringLiteral("appCatalog"), &appCatalog);
     engine.rootContext()->setContextProperty(QStringLiteral("overlayController"), &overlayController);
 
-    const QUrl mainQml(QStringLiteral("qrc:/qt/qml/Radial/ui/qml/Main.qml"));
+    const QUrl mainQml(QStringLiteral("qrc:/qt/qml/Radiq/ui/qml/Main.qml"));
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, &app,
         [mainQml](QObject *obj, const QUrl &objUrl) {
