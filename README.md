@@ -29,12 +29,20 @@ Ensure the following dependencies are installed on your system (e.g., via `pacma
 - **CMake** (v3.21+)
 - **C++20 Compiler** (`gcc` or `clang`)
 - **Qt 6** (`qt6-base`, `qt6-declarative`, `qt6-5compat`)
-- **LayerShellQt** (`layershell-qt`)
+- **LayerShellQt** (`layer-shell-qt`)
 - **Hyprland** (or any Wayland compositor supporting LayerShell)
 
 ---
+##  Installation
 
-##  Building from Source
+### Arch Linux (AUR) — recommended
+```bash
+yay -S radiq
+# or
+paru -S radiq
+```
+
+###  Building from Source
 
 ```bash
 # Clone the repository
@@ -120,8 +128,7 @@ If the file does not exist, a default starter configuration is automatically cre
   "fontFamily": "Inter, Roboto, sans-serif",
   "hotkeyDisplay": "SUPER + A",
   "blurAmount": 10
-git clone https://github.com/your-user/radiq.git
-cd radiq}
+  "scrimColor": "#CC0F0F15"
 ```
 
 ### Configuration Options
@@ -137,7 +144,7 @@ cd radiq}
 | `borderHighlightColor` | Hex String | Border stroke color for selected/hovered slots. |
 | `animationDurationMs` | Number (ms) | Duration for scale and color transitions. |
 | `fontFamily` | String | Font family stack for text labels. |
-
+| `scrimColor` | Hex String | Background dimming behind the wheel (alpha channel controls transparency). |
 
 ---
 
