@@ -38,7 +38,7 @@ Ensure the following dependencies are installed on your system (e.g., via `pacma
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-user/radiq.git
+git clone https://github.com/israrkhan-cys/radiq.git
 cd radiq
 
 # Configure the build
@@ -120,7 +120,8 @@ If the file does not exist, a default starter configuration is automatically cre
   "fontFamily": "Inter, Roboto, sans-serif",
   "hotkeyDisplay": "SUPER + A",
   "blurAmount": 10
-}
+git clone https://github.com/your-user/radiq.git
+cd radiq}
 ```
 
 ### Configuration Options
@@ -142,4 +143,4 @@ If the file does not exist, a default starter configuration is automatically cre
 
 ## 📄 License
 
-Distributed under the MIT License.
+Distributed under the MIT [LICENSE](LICENSE).
