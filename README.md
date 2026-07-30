@@ -9,6 +9,8 @@ A Wayland-native, game-inspired radial application launcher designed for Arch Li
 ---
 ## Preview
 ![Preview](/preview/2026-07-29-024259_hyprshot.png)
+![Preview](/preview/radiq.mp4)
+
 ---
 ##  Features
 
@@ -42,6 +44,8 @@ yay -S radiq
 paru -S radiq
 ```
 
+
+
 ###  Building from Source
 
 ```bash
@@ -64,35 +68,44 @@ The resulting binaries will be placed in:
 
 ##  Usage & Setup
 
-### 1. Launch the Daemon
-Start `radiqd` inside your active Wayland session:
+### 1. Test It Manually First
+
+Before wiring it into `exec-once`, it's worth running it once by hand to
+confirm everything works on your system.
+
+**If installed via AUR:**
 ```bash
-./build/src/radiqd
-```
-You can add `radiqd` to your Hyprland startup config (`hyprland.conf`):
-```ini
-exec-once = /path/to/radiqd
+radiqd &
+radiqctl toggle
 ```
 
-### 2. Controlling the Launcher (`radiqctl`)
-Use `radiqctl` to control the overlay from terminal or keybindings:
+**If built from source:**
 ```bash
-# Toggle the overlay window (Show / Hide)
+./build/src/radiqd &
 ./build/tools/radiqctl/radiqctl toggle
+```
+## 2. Add to Hyprland Config
 
-# Explicitly show the overlay
-./build/tools/radiqctl/radiqctl show
+Add these lines to `~/.config/hypr/hyprland.conf`:
 
-# Explicitly hide the overlay
-./build/tools/radiqctl/radiqctl hide
+**If installed via AUR** (`radiqd`/`radiqctl` are already on your `PATH`):
+```conf
+exec-once = radiqd
+bind = SUPER, A, exec, radiqctl toggle
 ```
 
-### 3. Hyprland Keybinding Setup
-Add a shortcut in `~/.config/hypr/hyprland.conf`:
-```ini
-# Bind Super + A to toggle the radial launcher
-bind = SUPER, A, exec, /path/to/radiqctl toggle
+**If built manually from source**, use the full path to your build output:
+```conf
+exec-once = /full/path/to/radiq/build/src/radiqd
+bind = SUPER, A, exec, /full/path/to/radiq/build/tools/radiqctl/radiqctl toggle
 ```
+
+Then reload Hyprland:
+```bash
+hyprctl reload
+```
+
+Press `Super + A` to summon the wheel.
 
 ---
 
