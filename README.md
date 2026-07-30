@@ -161,6 +161,8 @@ If the file does not exist, a default starter configuration is automatically cre
 
 ---
 
+> if you liked kindly start the repo and vote it on AUR Thankuu
+
 ## 📄 License
 
 Distributed under the MIT [LICENSE](LICENSE).
