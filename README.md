@@ -9,8 +9,8 @@ A Wayland-native, game-inspired radial application launcher designed for Arch Li
 ---
 ## Preview
 ![Preview](/preview/2026-07-29-024259_hyprshot.png)
-<video src="/preview/radiq.mp4" controls width="100%"></video>
 
+![Project Demo](preview/output.gif)
 
 ---
 ##  Features
