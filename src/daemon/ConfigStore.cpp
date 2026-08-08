@@ -23,7 +23,7 @@ QString ConfigStore::configFilePath() const {
 void ConfigStore::loadConfig() {
     // Set default values in memory first
     m_pinnedApps = {
-        "firefox.desktop",
+        "google-chrome.desktop",
         "Alacritty.desktop",
         "org.kde.dolphin.desktop",
         "code.desktop",

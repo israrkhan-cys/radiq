@@ -260,64 +260,15 @@ void AppCatalogModel::loadApps() {
         targetDesktopIds = m_configStore->pinnedApps();
     }
 
-    const QStringList defaultDesktopIds = {
-        "firefox.desktop",
-        "Alacritty.desktop",
-        "org.kde.dolphin.desktop",
-        "code.desktop",
-        "discord.desktop",
-        "gimp.desktop",
-        "btop.desktop",
-        "com.obsproject.Studio.desktop"
-    };
-
-    const QStringList defaultNames = {
-        "Firefox",
-        "Alacritty",
-        "Dolphin",
-        "VS Code",
-        "Discord",
-        "GIMP",
-        "Btop",
-        "OBS Studio"
-    };
-
-    const QStringList defaultExecs = {
-        "firefox",
-        "alacritty",
-        "dolphin",
-        "code",
-        "discord",
-        "gimp",
-        "alacritty -e btop",
-        "obs"
-    };
-
-    const QStringList defaultIcons = {
-        "firefox",
-        "Alacritty",
-        "system-file-manager",
-        "code",
-        "discord",
-        "gimp",
-        "system-monitor",
-        "obs"
-    };
-
-    if (targetDesktopIds.isEmpty()) {
-        targetDesktopIds = defaultDesktopIds;
-    } else {
-        // Fill remaining slots up to at least 8 elements using non-duplicate default apps
-        QSet<QString> addedIds(targetDesktopIds.begin(), targetDesktopIds.end());
-        for (int i = 0; i < defaultDesktopIds.size(); ++i) {
-            QString defId = defaultDesktopIds.at(i);
-            if (!addedIds.contains(defId)) {
-                targetDesktopIds.append(defId);
-                addedIds.insert(defId);
-            }
-            if (targetDesktopIds.size() >= 8) {
-                break;
-            }
+    // Fill remaining slots up to at least 8 elements using non-duplicate discovered system apps
+    QSet<QString> addedIds(targetDesktopIds.begin(), targetDesktopIds.end());
+    for (const AppInfo &app : m_allApps) {
+        if (targetDesktopIds.size() >= 8) {
+            break;
+        }
+        if (!addedIds.contains(app.desktopId)) {
+            targetDesktopIds.append(app.desktopId);
+            addedIds.insert(app.desktopId);
         }
     }
 
@@ -335,33 +286,19 @@ void AppCatalogModel::loadApps() {
             map["firstLetter"] = foundApp->firstLetter;
             map["hasIcon"] = foundApp->hasIcon;
         } else {
-            // Setup fallback item
+            // Setup generic fallback item for pinned apps not installed on system
             map["desktopId"] = targetId;
-            
-            // Check if it matches one of our defaults
-            int defaultIdx = defaultDesktopIds.indexOf(targetId);
+            QString base = targetId;
+            if (base.endsWith(".desktop")) {
+                base.chop(8);
+            }
+            QString fallbackExec = base;
+            QString fallbackIcon = base;
             QString fallbackName;
-            QString fallbackExec;
-            QString fallbackIcon;
-            
-            if (defaultIdx != -1) {
-                fallbackName = defaultNames.at(defaultIdx);
-                fallbackExec = defaultExecs.at(defaultIdx);
-                fallbackIcon = defaultIcons.at(defaultIdx);
+            if (!base.isEmpty()) {
+                fallbackName = base.at(0).toUpper() + base.mid(1);
             } else {
-                // Custom app fallback guessing
-                QString base = targetId;
-                if (base.endsWith(".desktop")) {
-                    base.chop(8);
-                }
-                fallbackExec = base;
-                fallbackIcon = base;
-                
-                if (!base.isEmpty()) {
-                    fallbackName = base.at(0).toUpper() + base.mid(1);
-                } else {
-                    fallbackName = "Unknown";
-                }
+                fallbackName = "Unknown";
             }
             
             map["name"] = fallbackName;
